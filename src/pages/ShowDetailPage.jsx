@@ -15,7 +15,7 @@ function ShowDetail({ id }) {
   const [error, setError] = useState(null);
   const [activeSeason, setActiveSeason] = useState(0);
 
-  const { setCurrentEpisode, setIsPlaying } = useAudioPlayer();
+  const { currentEpisode, isPlaying, playEpisode, togglePlay } = useAudioPlayer();
 
   useEffect(() => {
     getShowById(id)
@@ -30,14 +30,26 @@ function ShowDetail({ id }) {
 
   const season = show.seasons[activeSeason];
 
-  function handlePlay(episode) {
-    setCurrentEpisode({
-      showId: show.id,
-      showTitle: show.title,
-      seasonTitle: season.title,
-      ...episode,
-    });
-    setIsPlaying(true);
+  function isCurrentEpisode(episode) {
+    return (
+      currentEpisode &&
+      currentEpisode.showId === show.id &&
+      currentEpisode.seasonTitle === season.title &&
+      currentEpisode.episode === episode.episode
+    );
+  }
+
+  function handleEpisodeClick(episode) {
+    if (isCurrentEpisode(episode)) {
+      togglePlay();
+    } else {
+      playEpisode({
+        showId: show.id,
+        showTitle: show.title,
+        seasonTitle: season.title,
+        ...episode,
+      });
+    }
   }
 
   return (
@@ -68,17 +80,20 @@ function ShowDetail({ id }) {
       </div>
 
       <div className="episode-list">
-        {season.episodes.map((episode) => (
-          <div key={episode.episode} className="episode-item">
-            <div>
-              <h3>{episode.episode}. {episode.title}</h3>
-              <p>{episode.description}</p>
+        {season.episodes.map((episode) => {
+          const active = isCurrentEpisode(episode);
+          return (
+            <div key={episode.episode} className="episode-item">
+              <div>
+                <h3>{episode.episode}. {episode.title}</h3>
+                <p>{episode.description}</p>
+              </div>
+              <button onClick={() => handleEpisodeClick(episode)} className="play-button">
+                {active && isPlaying ? "⏸ Pause" : "▶ Play"}
+              </button>
             </div>
-            <button onClick={() => handlePlay(episode)} className="play-button">
-              ▶ Play
-            </button>
-          </div>
-        ))}
+          );
+        })}
       </div>
     </div>
   );
