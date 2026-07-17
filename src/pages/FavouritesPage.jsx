@@ -1,11 +1,14 @@
 import { useMemo, useState } from "react";
 import { useFavourites } from "../context/FavouritesContext";
 import { useAudioPlayer } from "../context/AudioPlayerContext";
+import { useListeningProgress } from "../context/ListeningProgressContext";
 import { formatDateTime } from "../utils/formatDate";
+import EpisodeItem from "../components/episodes/EpisodeItem";
 
 export default function FavouritesPage() {
   const { favourites, removeFavourite } = useFavourites();
-  const { playEpisode } = useAudioPlayer();
+  const { currentEpisode, isPlaying, playEpisode, togglePlay } = useAudioPlayer();
+  const { getProgress } = useListeningProgress();
   const [sortBy, setSortBy] = useState("title-asc");
 
   const groupedAndSorted = useMemo(() => {
@@ -41,6 +44,15 @@ export default function FavouritesPage() {
       .map(([showTitle, episodes]) => [showTitle, sortEpisodes(episodes)]);
   }, [favourites, sortBy]);
 
+  function isCurrentEpisode(fav) {
+    return (
+      currentEpisode &&
+      currentEpisode.showId === fav.showId &&
+      currentEpisode.seasonTitle === fav.seasonTitle &&
+      currentEpisode.episode === fav.episode
+    );
+  }
+
   if (favourites.length === 0) {
     return (
       <div className="favourites-page">
@@ -66,27 +78,31 @@ export default function FavouritesPage() {
         <div key={showTitle} className="favourites-group">
           <h2>{showTitle}</h2>
           <div className="episode-list">
-            {episodes.map((fav) => (
-              <div key={fav.id} className="episode-item">
-                <div>
-                  <h3>{fav.episode}. {fav.title}</h3>
-                  <p className="show-detail__meta">{fav.seasonTitle}</p>
-                  <p className="show-detail__meta">Added {formatDateTime(fav.addedAt)}</p>
-                </div>
-                <div className="episode-item__actions">
-                  <button onClick={() => playEpisode(fav)} className="play-button">
-                    ▶ Play
-                  </button>
-                  <button
-                    onClick={() => removeFavourite(fav.showId, fav.seasonTitle, fav.episode)}
-                    className="favourite-button favourite-button--active"
-                    aria-label="Remove from favourites"
-                  >
-                    ♥
-                  </button>
-                </div>
-              </div>
-            ))}
+            {episodes.map((fav) => {
+              const active = isCurrentEpisode(fav);
+              const saved = getProgress(fav.showId, fav.seasonTitle, fav.episode);
+              const percent =
+                saved && saved.duration
+                  ? Math.min(100, Math.round((saved.position / saved.duration) * 100))
+                  : 0;
+
+              let playLabel = "▶ Play";
+              if (active && isPlaying) playLabel = "⏸ Pause";
+              else if (saved && !saved.finished && saved.position > 3) playLabel = "▶ Resume";
+
+              return (
+                <EpisodeItem
+                  key={fav.id}
+                  episode={fav}
+                  subtitle={[fav.seasonTitle, `Added ${formatDateTime(fav.addedAt)}`]}
+                  progress={saved ? { percent, finished: saved.finished } : null}
+                  favourited
+                  onToggleFavourite={() => removeFavourite(fav.showId, fav.seasonTitle, fav.episode)}
+                  playLabel={playLabel}
+                  onPlayClick={() => (active ? togglePlay() : playEpisode(fav))}
+                />
+              );
+            })}
           </div>
         </div>
       ))}
