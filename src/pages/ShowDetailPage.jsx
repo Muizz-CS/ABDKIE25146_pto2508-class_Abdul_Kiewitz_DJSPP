@@ -5,6 +5,8 @@ import { useAudioPlayer } from "../context/AudioPlayerContext";
 import { useFavourites } from "../context/FavouritesContext";
 import { useListeningProgress } from "../context/ListeningProgressContext";
 import { formatDate } from "../utils/formatDate";
+import SeasonTabs from "../components/shows/SeasonTabs";
+import EpisodeItem from "../components/episodes/EpisodeItem";
 
 export default function ShowDetailPage() {
   const { id } = useParams();
@@ -75,17 +77,7 @@ function ShowDetail({ id }) {
         </div>
       </div>
 
-      <div className="season-tabs">
-        {show.seasons.map((s, index) => (
-          <button
-            key={s.season}
-            className={`season-tab ${index === activeSeason ? "season-tab--active" : ""}`}
-            onClick={() => setActiveSeason(index)}
-          >
-            {s.title}
-          </button>
-        ))}
-      </div>
+      <SeasonTabs seasons={show.seasons} activeIndex={activeSeason} onSelect={setActiveSeason} />
 
       <div className="episode-list">
         {season.episodes.map((episode) => {
@@ -102,30 +94,16 @@ function ShowDetail({ id }) {
           else if (saved && !saved.finished && saved.position > 3) playLabel = "▶ Resume";
 
           return (
-            <div key={episode.episode} className="episode-item">
-              <div className="episode-item__info">
-                <h3>{episode.episode}. {episode.title}</h3>
-                <p>{episode.description}</p>
-                {saved && (
-                  <div className="episode-progress">
-                    <div className="episode-progress__bar" style={{ width: `${percent}%` }} />
-                  </div>
-                )}
-                {saved?.finished && <span className="episode-progress__label">Finished</span>}
-              </div>
-              <div className="episode-item__actions">
-                <button
-                  onClick={() => toggleFavourite(buildEpisodeData(episode))}
-                  className={`favourite-button ${favourited ? "favourite-button--active" : ""}`}
-                  aria-label={favourited ? "Remove from favourites" : "Add to favourites"}
-                >
-                  {favourited ? "♥" : "♡"}
-                </button>
-                <button onClick={() => handleEpisodeClick(episode)} className="play-button">
-                  {playLabel}
-                </button>
-              </div>
-            </div>
+            <EpisodeItem
+              key={episode.episode}
+              episode={episode}
+              subtitle={episode.description}
+              progress={saved ? { percent, finished: saved.finished } : null}
+              favourited={favourited}
+              onToggleFavourite={() => toggleFavourite(buildEpisodeData(episode))}
+              playLabel={playLabel}
+              onPlayClick={() => handleEpisodeClick(episode)}
+            />
           );
         })}
       </div>
