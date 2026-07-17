@@ -1,9 +1,14 @@
 export const BASE_URL = "https://podcast-api.netlify.app";
 
+let showsCache = null;
+
 export async function getAllShows() {
+  if (showsCache) return showsCache;
   const res = await fetch(`${BASE_URL}/`);
   if (!res.ok) throw new Error("Failed to fetch shows");
-  return res.json();
+  const data = await res.json();
+  showsCache = data;
+  return data;
 }
 
 export async function getShowById(id) {
