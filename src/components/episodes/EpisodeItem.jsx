@@ -1,3 +1,19 @@
+/**
+ * A single episode row: title, secondary info, an optional progress bar,
+ * a favourite toggle, and a play/pause/resume button. Shared by
+ * ShowDetailPage and FavouritesPage so both stay visually and
+ * functionally in sync — the caller decides what subtitle/progress/label
+ * to pass in, this component just renders it consistently.
+ *
+ * @param {object} props
+ * @param {object} props.episode - Episode data with at least `episode` (number) and `title`.
+ * @param {string|string[]} props.subtitle - One line of secondary text, or several (rendered as separate paragraphs).
+ * @param {{ percent: number, finished: boolean }|null} props.progress - Listening progress to display, or `null` to hide the progress bar entirely.
+ * @param {boolean} props.favourited - Whether this episode is currently favourited (controls heart icon fill).
+ * @param {() => void} props.onToggleFavourite - Called when the heart button is clicked.
+ * @param {string} props.playLabel - Text for the play button, e.g. "▶ Play", "⏸ Pause", "▶ Resume".
+ * @param {() => void} props.onPlayClick - Called when the play/pause/resume button is clicked.
+ */
 export default function EpisodeItem({
   episode,
   subtitle,

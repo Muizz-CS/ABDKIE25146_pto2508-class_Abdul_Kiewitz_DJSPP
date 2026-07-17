@@ -1,5 +1,14 @@
 import { Link } from "react-router-dom";
 
+/**
+ * A clickable preview card for a show: image, title, season count, and
+ * resolved genre tags. Links to the show's detail page. Used in the
+ * landing page grid.
+ *
+ * @param {object} props
+ * @param {object} props.show - Show preview object (id, title, image, seasons, genres [ids]).
+ * @param {Object<string, string>} props.genreTitles - Map of genre id to genre title, used to resolve `show.genres` to display names.
+ */
 export default function ShowCard({ show, genreTitles }) {
   const genreNames = (show.genres || []).map((id) => genreTitles[id] || "…");
 

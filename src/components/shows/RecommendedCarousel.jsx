@@ -4,6 +4,15 @@ import { getRecommendedShows } from "../../utils/recommendedCache";
 
 const RECOMMENDED_COUNT = 10;
 
+/**
+ * Horizontally scrollable, looping row of randomly recommended shows for
+ * the landing page. Supports swipe/trackpad scroll (native CSS scroll-snap)
+ * and arrow buttons that loop back around at either end.
+ *
+ * @param {object} props
+ * @param {Array<object>} props.shows - Full list of show previews to sample recommendations from.
+ * @param {Object<string, string>} props.genreTitles - Map of genre id to genre title.
+ */
 export default function RecommendedCarousel({ shows, genreTitles }) {
   const trackRef = useRef(null);
 
@@ -12,6 +21,12 @@ export default function RecommendedCarousel({ shows, genreTitles }) {
     [shows]
   );
 
+  /**
+   * Scrolls the carousel track one "page" in the given direction,
+   * looping to the opposite end if already at a boundary.
+   *
+   * @param {"next"|"prev"} direction
+   */
   function scrollByAmount(direction) {
     const el = trackRef.current;
     if (!el) return;

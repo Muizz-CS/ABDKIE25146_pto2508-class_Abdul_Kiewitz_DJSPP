@@ -8,11 +8,25 @@ import { formatDate } from "../utils/formatDate";
 import SeasonTabs from "../components/shows/SeasonTabs";
 import EpisodeItem from "../components/episodes/EpisodeItem";
 
+/**
+ * Route component for `/show/:id`. Reads the id from the URL and renders
+ * `ShowDetail` keyed on it, so navigating between two different shows
+ * fully remounts the inner component — resetting its `loading`/`activeSeason`
+ * state for free, rather than resetting it manually inside an effect.
+ */
 export default function ShowDetailPage() {
   const { id } = useParams();
   return <ShowDetail key={id} id={id} />;
 }
 
+/**
+ * Fetches and renders a single show: header (image/title/description),
+ * season tabs, and the active season's episode list with play/favourite/
+ * progress controls.
+ *
+ * @param {object} props
+ * @param {string} props.id - The show's id (from the route).
+ */
 function ShowDetail({ id }) {
   const [show, setShow] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -36,6 +50,13 @@ function ShowDetail({ id }) {
 
   const season = show.seasons[activeSeason];
 
+  /**
+   * Builds the episode payload shape shared by playback and favouriting,
+   * tagging a raw episode object with its parent show/season info.
+   *
+   * @param {object} episode - Raw episode object (title, description, episode, file).
+   * @returns {object} Episode data enriched with showId, showTitle, seasonTitle.
+   */
   function buildEpisodeData(episode) {
     return {
       showId: show.id,
@@ -45,6 +66,10 @@ function ShowDetail({ id }) {
     };
   }
 
+  /**
+   * @param {object} episode - Raw episode object.
+   * @returns {boolean} Whether this is the episode currently loaded in the global player.
+   */
   function isCurrentEpisode(episode) {
     return (
       currentEpisode &&
@@ -54,6 +79,7 @@ function ShowDetail({ id }) {
     );
   }
 
+  /** Plays the given episode, or toggles play/pause if it's already the loaded one. */
   function handleEpisodeClick(episode) {
     if (isCurrentEpisode(episode)) {
       togglePlay();

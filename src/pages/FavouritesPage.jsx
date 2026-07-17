@@ -5,12 +5,20 @@ import { useListeningProgress } from "../context/ListeningProgressContext";
 import { formatDateTime } from "../utils/formatDate";
 import EpisodeItem from "../components/episodes/EpisodeItem";
 
+/**
+ * Favourites page. Groups favourited episodes by show title, sortable
+ * within each group by title (A–Z/Z–A) or date added (newest/oldest),
+ * with the same play/pause/resume and progress display as the show
+ * detail page. Takes no props.
+ */
 export default function FavouritesPage() {
   const { favourites, removeFavourite } = useFavourites();
   const { currentEpisode, isPlaying, playEpisode, togglePlay } = useAudioPlayer();
   const { getProgress } = useListeningProgress();
   const [sortBy, setSortBy] = useState("title-asc");
 
+  // Groups favourites by show title, then sorts episodes within each
+  // group according to the selected sort option.
   const groupedAndSorted = useMemo(() => {
     const groups = {};
     for (const fav of favourites) {
@@ -44,6 +52,10 @@ export default function FavouritesPage() {
       .map(([showTitle, episodes]) => [showTitle, sortEpisodes(episodes)]);
   }, [favourites, sortBy]);
 
+  /**
+   * @param {object} fav - A favourite entry.
+   * @returns {boolean} Whether it's the episode currently loaded in the global player.
+   */
   function isCurrentEpisode(fav) {
     return (
       currentEpisode &&

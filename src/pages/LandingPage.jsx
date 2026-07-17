@@ -4,6 +4,11 @@ import { getGenreTitles } from "../utils/genreCache";
 import ShowCard from "../components/shows/ShowCard";
 import RecommendedCarousel from "../components/shows/RecommendedCarousel";
 
+/**
+ * Homepage. Fetches the full show catalogue and genre titles once on
+ * mount, then renders the recommended carousel, search/genre-filter/sort
+ * controls, and the filtered/sorted show grid. Takes no props.
+ */
 export default function LandingPage() {
   const [shows, setShows] = useState([]);
   const [genreTitles, setGenreTitles] = useState({});
@@ -26,6 +31,8 @@ export default function LandingPage() {
       .finally(() => setLoading(false));
   }, []);
 
+  // Derives the visible show list from the fetched shows plus the current
+  // search/genre/sort controls. Recomputed only when one of those changes.
   const filteredAndSorted = useMemo(() => {
     let result = shows.filter((show) =>
       show.title.toLowerCase().includes(search.toLowerCase())
