@@ -27,40 +27,42 @@ This is a podcast app I built for the final portfolio piece of the DJS course. Y
 
 ## How it's organized
 
+```
 src/
-api/
-podcastApi.js          # talks to the podcast API, caches the shows list
-context/
-ThemeContext.jsx
-FavouritesContext.jsx
-ListeningProgressContext.jsx
-AudioPlayerContext.jsx
-hooks/
-useLocalStorage.js      # one hook, reused by all the contexts above
-components/
-layout/
-Header.jsx
-ThemeToggle.jsx
-AudioPlayerBar.jsx
-shows/
-ShowCard.jsx
-RecommendedCarousel.jsx
-SeasonTabs.jsx
-episodes/
-EpisodeItem.jsx
-pages/
-LandingPage.jsx
-ShowDetailPage.jsx
-FavouritesPage.jsx
-utils/
-formatDate.js
-formatTime.js
-shuffle.js
-genreCache.js
-recommendedCache.js
-App.jsx
-main.jsx
-index.css
+  api/
+    podcastApi.js          # talks to the podcast API, caches the shows list
+  context/
+    ThemeContext.jsx
+    FavouritesContext.jsx
+    ListeningProgressContext.jsx
+    AudioPlayerContext.jsx
+  hooks/
+    useLocalStorage.js      # one hook, reused by all the contexts above
+  components/
+    layout/
+      Header.jsx
+      ThemeToggle.jsx
+      AudioPlayerBar.jsx
+    shows/
+      ShowCard.jsx
+      RecommendedCarousel.jsx
+      SeasonTabs.jsx
+    episodes/
+      EpisodeItem.jsx
+  pages/
+    LandingPage.jsx
+    ShowDetailPage.jsx
+    FavouritesPage.jsx
+  utils/
+    formatDate.js
+    formatTime.js
+    shuffle.js
+    genreCache.js
+    recommendedCache.js
+  App.jsx
+  main.jsx
+  index.css
+```
 
 ## Running it yourself
 
