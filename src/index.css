@@ -229,6 +229,13 @@ body {
   opacity: 0.75;
 }
 
+.episode-item__actions {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-shrink: 0;
+}
+
 .play-button {
   flex-shrink: 0;
   border: none;
@@ -237,6 +244,54 @@ body {
   padding: 0.5rem 1rem;
   border-radius: 999px;
   cursor: pointer;
+}
+
+.favourite-button {
+  border: none;
+  background: transparent;
+  color: var(--accent);
+  font-size: 1.3rem;
+  cursor: pointer;
+  line-height: 1;
+  padding: 0.25rem;
+}
+
+.favourite-button--active {
+  color: #e0245e;
+}
+
+.favourites-page {
+  padding: 1rem;
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.favourites-page__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.favourites-page__header select {
+  padding: 0.5rem 0.75rem;
+  border-radius: 6px;
+  border: 1px solid var(--card-bg);
+  background: var(--card-bg);
+  color: var(--text);
+}
+
+.favourites-group {
+  margin-bottom: 2rem;
+}
+
+.favourites-group h2 {
+  font-size: 1.1rem;
+  margin-bottom: 0.75rem;
+  border-bottom: 1px solid var(--card-bg);
+  padding-bottom: 0.5rem;
 }
 
 .audio-player-bar {
