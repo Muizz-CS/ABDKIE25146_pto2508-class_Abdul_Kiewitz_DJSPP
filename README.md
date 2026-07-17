@@ -27,7 +27,7 @@ This is a podcast app I built for the final portfolio piece of the DJS course. Y
 
 ## How it's organized
 
-```
+```bash
 src/
   api/
     podcastApi.js          # talks to the podcast API, caches the shows list
