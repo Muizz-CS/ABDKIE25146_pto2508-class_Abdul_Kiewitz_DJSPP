@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import { getAllShows } from "../api/podcastApi";
 import { getGenreTitles } from "../utils/genreCache";
 import ShowCard from "../components/shows/ShowCard";
+import RecommendedCarousel from "../components/shows/RecommendedCarousel";
 
 export default function LandingPage() {
   const [shows, setShows] = useState([]);
@@ -59,6 +60,8 @@ export default function LandingPage() {
 
   return (
     <div className="landing-page">
+      <RecommendedCarousel shows={shows} genreTitles={genreTitles} />
+
       <div className="landing-controls">
         <input
           type="text"
