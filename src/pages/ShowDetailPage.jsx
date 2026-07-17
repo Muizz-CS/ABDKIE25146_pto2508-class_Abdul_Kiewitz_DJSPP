@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import { getShowById } from "../api/podcastApi";
 import { useAudioPlayer } from "../context/AudioPlayerContext";
+import { useFavourites } from "../context/FavouritesContext";
 import { formatDate } from "../utils/formatDate";
 
 export default function ShowDetailPage() {
@@ -16,6 +17,7 @@ function ShowDetail({ id }) {
   const [activeSeason, setActiveSeason] = useState(0);
 
   const { currentEpisode, isPlaying, playEpisode, togglePlay } = useAudioPlayer();
+  const { isFavourite, toggleFavourite } = useFavourites();
 
   useEffect(() => {
     getShowById(id)
@@ -30,6 +32,15 @@ function ShowDetail({ id }) {
 
   const season = show.seasons[activeSeason];
 
+  function buildEpisodeData(episode) {
+    return {
+      showId: show.id,
+      showTitle: show.title,
+      seasonTitle: season.title,
+      ...episode,
+    };
+  }
+
   function isCurrentEpisode(episode) {
     return (
       currentEpisode &&
@@ -43,12 +54,7 @@ function ShowDetail({ id }) {
     if (isCurrentEpisode(episode)) {
       togglePlay();
     } else {
-      playEpisode({
-        showId: show.id,
-        showTitle: show.title,
-        seasonTitle: season.title,
-        ...episode,
-      });
+      playEpisode(buildEpisodeData(episode));
     }
   }
 
@@ -82,15 +88,26 @@ function ShowDetail({ id }) {
       <div className="episode-list">
         {season.episodes.map((episode) => {
           const active = isCurrentEpisode(episode);
+          const favourited = isFavourite(show.id, season.title, episode.episode);
+
           return (
             <div key={episode.episode} className="episode-item">
               <div>
                 <h3>{episode.episode}. {episode.title}</h3>
                 <p>{episode.description}</p>
               </div>
-              <button onClick={() => handleEpisodeClick(episode)} className="play-button">
-                {active && isPlaying ? "⏸ Pause" : "▶ Play"}
-              </button>
+              <div className="episode-item__actions">
+                <button
+                  onClick={() => toggleFavourite(buildEpisodeData(episode))}
+                  className={`favourite-button ${favourited ? "favourite-button--active" : ""}`}
+                  aria-label={favourited ? "Remove from favourites" : "Add to favourites"}
+                >
+                  {favourited ? "♥" : "♡"}
+                </button>
+                <button onClick={() => handleEpisodeClick(episode)} className="play-button">
+                  {active && isPlaying ? "⏸ Pause" : "▶ Play"}
+                </button>
+              </div>
             </div>
           );
         })}
