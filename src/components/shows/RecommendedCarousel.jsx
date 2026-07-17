@@ -1,6 +1,6 @@
 import { useMemo, useRef } from "react";
 import { Link } from "react-router-dom";
-import { shuffle } from "../../utils/shuffle";
+import { getRecommendedShows } from "../../utils/recommendedCache";
 
 const RECOMMENDED_COUNT = 10;
 
@@ -8,7 +8,7 @@ export default function RecommendedCarousel({ shows, genreTitles }) {
   const trackRef = useRef(null);
 
   const recommended = useMemo(
-    () => shuffle(shows).slice(0, RECOMMENDED_COUNT),
+    () => getRecommendedShows(shows, RECOMMENDED_COUNT),
     [shows]
   );
 
