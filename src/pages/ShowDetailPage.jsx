@@ -3,6 +3,7 @@ import { useParams, Link } from "react-router-dom";
 import { getShowById } from "../api/podcastApi";
 import { useAudioPlayer } from "../context/AudioPlayerContext";
 import { useFavourites } from "../context/FavouritesContext";
+import { useListeningProgress } from "../context/ListeningProgressContext";
 import { formatDate } from "../utils/formatDate";
 
 export default function ShowDetailPage() {
@@ -18,6 +19,7 @@ function ShowDetail({ id }) {
 
   const { currentEpisode, isPlaying, playEpisode, togglePlay } = useAudioPlayer();
   const { isFavourite, toggleFavourite } = useFavourites();
+  const { getProgress } = useListeningProgress();
 
   useEffect(() => {
     getShowById(id)
@@ -89,12 +91,27 @@ function ShowDetail({ id }) {
         {season.episodes.map((episode) => {
           const active = isCurrentEpisode(episode);
           const favourited = isFavourite(show.id, season.title, episode.episode);
+          const saved = getProgress(show.id, season.title, episode.episode);
+          const percent =
+            saved && saved.duration
+              ? Math.min(100, Math.round((saved.position / saved.duration) * 100))
+              : 0;
+
+          let playLabel = "▶ Play";
+          if (active && isPlaying) playLabel = "⏸ Pause";
+          else if (saved && !saved.finished && saved.position > 3) playLabel = "▶ Resume";
 
           return (
             <div key={episode.episode} className="episode-item">
-              <div>
+              <div className="episode-item__info">
                 <h3>{episode.episode}. {episode.title}</h3>
                 <p>{episode.description}</p>
+                {saved && (
+                  <div className="episode-progress">
+                    <div className="episode-progress__bar" style={{ width: `${percent}%` }} />
+                  </div>
+                )}
+                {saved?.finished && <span className="episode-progress__label">Finished</span>}
               </div>
               <div className="episode-item__actions">
                 <button
@@ -105,7 +122,7 @@ function ShowDetail({ id }) {
                   {favourited ? "♥" : "♡"}
                 </button>
                 <button onClick={() => handleEpisodeClick(episode)} className="play-button">
-                  {active && isPlaying ? "⏸ Pause" : "▶ Play"}
+                  {playLabel}
                 </button>
               </div>
             </div>
