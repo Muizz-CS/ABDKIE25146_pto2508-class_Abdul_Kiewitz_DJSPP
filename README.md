@@ -21,7 +21,7 @@ This is a podcast app I built for the final portfolio piece of the DJS course. Y
 - **Vite** for the dev server/build — fast and no config headaches
 - **React Router** for navigation between pages
 - **Context API** for the global stuff (theme, favourites, listening progress, the audio player itself) — didn't bother with Redux or anything, the app just isn't big enough to need it
-- **Plain CSS** with CSS variables for the theming — no Tailwind, no styled-components, just `.css` files and `var(--whatever)`
+- **Plain CSS** with CSS variables for the theming — no Tailwind, no styled-components, just `.css` files.
 - **[podcast-api.netlify.app](https://podcast-api.netlify.app)** for all the show/episode/genre data — this was provided for the course, it's a placeholder API
 - **Vercel** for hosting
 
@@ -70,7 +70,7 @@ You'll need Node 18+ and npm.
 
 ```bash
 git clone https://github.com/Muizz-CS/ABDKIE25146_pto2508-class_Abdul_Kiewitz_DJSPP.git
-cd podcast-app
+cd ABDKIE25146_pto2508-class_Abdul_Kiewitz_DJSPP
 npm install
 npm run dev
 ```
