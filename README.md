@@ -69,7 +69,7 @@ src/
 You'll need Node 18+ and npm.
 
 ```bash
-git clone https://github.com/<your-username>/podcast-app.git
+git clone https://github.com/Muizz-CS/ABDKIE25146_pto2508-class_Abdul_Kiewitz_DJSPP.git
 cd podcast-app
 npm install
 npm run dev
